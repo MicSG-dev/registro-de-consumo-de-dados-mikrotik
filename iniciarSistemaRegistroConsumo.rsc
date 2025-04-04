@@ -1,37 +1,90 @@
-:local nomeArquivo "consumidoSessaoAnterior.txt" 
+:local nomeArquivoSessaoAnterior "consumidoSessaoAnterior.txt" 
+:local nomeArquivoSessaoAtual "consumidoSessaoAtual.txt"
 
 :local arquivoExiste false
 
 :foreach arq in=[/file find] do={
-    :if ([/file get $arq name] = $nomeArquivo) do={
+    :if ([/file get $arq name] = $nomeArquivoSessaoAnterior) do={
         :set arquivoExiste true
     }
 }
 
 :if (!$arquivoExiste) do={
-    /file print file=$nomeArquivo
-    /file set $nomeArquivo contents="DOWNLOAD:0&UPLOAD:0"
+    /file print file=$nomeArquivoSessaoAnterior
+    /file set $nomeArquivoSessaoAnterior contents="DOWNLOAD:123&UPLOAD:456"
 
-    :log info "Arquivo '$nomeArquivo' criado porque não existia."
+    :log info "Arquivo '$nomeArquivoSessaoAnterior' criado porque não existia."
 } else={
-    :log info "Arquivo '$nomeArquivo' já existe. Nenhuma ação necessária."
+    :log info "Arquivo '$nomeArquivoSessaoAnterior' já existe. Nenhuma ação necessária."
 }
 
-# substitui o nome do arquivo para consumidoSessaoAtual.txt
-:set nomeArquivo "consumidoSessaoAtual.txt"
-:local arquivoAtualExiste false
+:set arquivoExiste false
 
 :foreach arq in=[/file find] do={
-    :if ([/file get $arq name] = $nomeArquivo) do={
-        :set arquivoAtualExiste true
+    :if ([/file get $arq name] = $nomeArquivoSessaoAtual) do={
+        :set arquivoExiste true
     }
 }
 
-:if (!$arquivoAtualExiste) do={
-    /file print file=$nomeArquivo
-    /file set $nomeArquivo contents="DOWNLOAD:0&UPLOAD:0"
+:if (!$arquivoExiste) do={
+    /file print file=$nomeArquivoSessaoAtual
+    /file set $nomeArquivoSessaoAtual contents="DOWNLOAD:789&UPLOAD:654"
 
-    :log info "Arquivo '$nomeArquivo' criado porque não existia."
+    :log info "Arquivo '$nomeArquivoSessaoAtual' criado porque não existia."
 } else={
-    :log info "Arquivo '$nomeArquivo' já existe. Nenhuma ação necessária."
+    :log info "Arquivo '$nomeArquivoSessaoAtual' já existe. Nenhuma ação necessária."
 }
+
+:local consumoDownloadAnterior 0
+:local consumoUploadAnterior 0
+
+:local conteudoArquivo [/file get $nomeArquivoSessaoAnterior contents]
+
+
+:local iniDownload [:find $conteudoArquivo "DOWNLOAD:"]
+
+# Extrair DOWNLOAD
+:if ($iniDownload >= 0) do={
+    :set iniDownload ($iniDownload + [:len "DOWNLOAD:"])
+    :local fimDownload [:find $conteudoArquivo "&UPLOAD:"]
+    :if ($fimDownload > $iniDownload) do={
+        :set consumoDownloadAnterior [:tonum [:pick $conteudoArquivo $iniDownload $fimDownload]]
+    }
+}
+
+# Extrair UPLOAD
+:local iniUpload [:find $conteudoArquivo "UPLOAD:"]
+:if ($iniUpload >= 0) do={
+    :set iniUpload ($iniUpload + [:len "UPLOAD:"])
+    :local fimUpload [:len $conteudoArquivo]
+    :set consumoUploadAnterior [:tonum [:pick $conteudoArquivo $iniUpload $fimUpload]]
+}
+
+:log info "Consumo de dados anterior: Download = $consumoDownloadAnterior E Upload = $consumoUploadAnterior"
+
+
+:local consumoDownloadAtual 0
+:local consumoUploadAtual 0
+
+:set conteudoArquivo [/file get $nomeArquivoSessaoAtual contents]
+
+:set iniDownload [:find $conteudoArquivo "DOWNLOAD:"]
+
+# Extrair DOWNLOAD
+:if ($iniDownload >= 0) do={
+    :set iniDownload ($iniDownload + [:len "DOWNLOAD:"])
+    :local fimDownload [:find $conteudoArquivo "&UPLOAD:"]
+    :if ($fimDownload > $iniDownload) do={
+        :set consumoDownloadAtual [:tonum [:pick $conteudoArquivo $iniDownload $fimDownload]]
+    }
+}
+
+# Extrair UPLOAD
+:set iniUpload [:find $conteudoArquivo "UPLOAD:"]
+:if ($iniUpload >= 0) do={
+    :set iniUpload ($iniUpload + [:len "UPLOAD:"])
+    :local fimUpload [:len $conteudoArquivo]
+    :set consumoUploadAtual [:tonum [:pick $conteudoArquivo $iniUpload $fimUpload]]
+}
+
+:log info "Consumo de dados atual: Download = $consumoDownloadAtual E Upload = $consumoUploadAtual"
