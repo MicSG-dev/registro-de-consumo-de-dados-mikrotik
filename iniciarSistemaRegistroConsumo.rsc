@@ -1,3 +1,6 @@
+:log info " "
+:log info "Iniciando o sistema de registro de consumo de dados."
+
 :local nomeArquivoSessaoAnterior "consumidoSessaoAnterior.txt" 
 :local nomeArquivoSessaoAtual "consumidoSessaoAtual.txt"
 
@@ -11,11 +14,9 @@
 
 :if (!$arquivoExiste) do={
     /file print file=$nomeArquivoSessaoAnterior
-    /file set $nomeArquivoSessaoAnterior contents="DOWNLOAD:123&UPLOAD:456"
+    /file set $nomeArquivoSessaoAnterior contents="DOWNLOAD:0&UPLOAD:0"
 
     :log info "Arquivo '$nomeArquivoSessaoAnterior' criado porque não existia."
-} else={
-    :log info "Arquivo '$nomeArquivoSessaoAnterior' já existe. Nenhuma ação necessária."
 }
 
 :set arquivoExiste false
@@ -28,11 +29,9 @@
 
 :if (!$arquivoExiste) do={
     /file print file=$nomeArquivoSessaoAtual
-    /file set $nomeArquivoSessaoAtual contents="DOWNLOAD:789&UPLOAD:654"
+    /file set $nomeArquivoSessaoAtual contents="DOWNLOAD:0&UPLOAD:0"
 
     :log info "Arquivo '$nomeArquivoSessaoAtual' criado porque não existia."
-} else={
-    :log info "Arquivo '$nomeArquivoSessaoAtual' já existe. Nenhuma ação necessária."
 }
 
 :local consumoDownloadAnterior 0
@@ -92,10 +91,15 @@
 :local downloadTotal 0
 :local uploadTotal 0
 
+# somar os contadores de download e upload em consumidoSessaoAnterior.txt
 :set downloadTotal ($consumoDownloadAnterior + $consumoDownloadAtual)
 :set uploadTotal ($consumoUploadAnterior + $consumoUploadAtual)
-:log info "Consumo total de dados: Download = $downloadTotal E Upload = $uploadTotal"
+/file set $nomeArquivoSessaoAnterior contents="DOWNLOAD:$downloadTotal&UPLOAD:$uploadTotal"
+
+:log info "Consumo de dados total: Download = $downloadTotal E Upload = $uploadTotal"
 
 # zerar os contadores de download e upload em consumidoSessaoAtual.txt
 /file set $nomeArquivoSessaoAtual contents="DOWNLOAD:0&UPLOAD:0"
 :log info "Contadores de download e upload zerados em '$nomeArquivoSessaoAtual'."
+
+:log info "Sistema de registro de consumo de dados finalizado."
