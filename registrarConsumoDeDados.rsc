@@ -1,7 +1,7 @@
 :log info " "
 :log info "Registrando o consumo de dados"
 
-:local nomeArquivoSessaoAtual "consumidoSessaoAtual.txt"
+:local nomeArquivoSessaoAtual "flash/consumidoSessaoAtual.txt"
 
 :local consumoDownload [/interface get lte1 rx-byte]
 :local consumoUpload [/interface get lte1 tx-byte]

@@ -1,26 +1,8 @@
 :log info " "
-:log info "Iniciando o sistema de registro de consumo de dados."
+:log info "Consumo de dados total"
 
 :local nomeArquivoSessaoAnterior "flash/consumidoSessaoAnterior.txt" 
 :local nomeArquivoSessaoAtual "flash/consumidoSessaoAtual.txt"
-
-:local arquivoID [/file find name=$nomeArquivoSessaoAnterior]
-
-:if ($arquivoID = "") do={
-    /file print file=$nomeArquivoSessaoAnterior
-    /file set $nomeArquivoSessaoAnterior contents="DOWNLOAD:0&UPLOAD:0"
-
-    :log info "Arquivo '$nomeArquivoSessaoAnterior' criado porque não existia."
-}
-
-:set arquivoID [/file find name=$nomeArquivoSessaoAtual]
-
-:if ($arquivoID = "") do={
-    /file print file=$nomeArquivoSessaoAtual
-    /file set $nomeArquivoSessaoAtual contents="DOWNLOAD:0&UPLOAD:0"
-
-    :log info "Arquivo '$nomeArquivoSessaoAtual' criado porque não existia."
-}
 
 :local consumoDownloadAnterior 0
 :local consumoUploadAnterior 0
@@ -47,9 +29,6 @@
     :set consumoUploadAnterior [:tonum [:pick $conteudoArquivo $iniUpload $fimUpload]]
 }
 
-:log info "Consumo de dados anterior: Download = $consumoDownloadAnterior E Upload = $consumoUploadAnterior"
-
-
 :local consumoDownloadAtual 0
 :local consumoUploadAtual 0
 
@@ -74,20 +53,12 @@
     :set consumoUploadAtual [:tonum [:pick $conteudoArquivo $iniUpload $fimUpload]]
 }
 
-:log info "Consumo de dados atual: Download = $consumoDownloadAtual E Upload = $consumoUploadAtual"
-
 :local downloadTotal 0
 :local uploadTotal 0
 
 # somar os contadores de download e upload em consumidoSessaoAnterior.txt
 :set downloadTotal ($consumoDownloadAnterior + $consumoDownloadAtual)
 :set uploadTotal ($consumoUploadAnterior + $consumoUploadAtual)
-/file set $nomeArquivoSessaoAnterior contents="DOWNLOAD:$downloadTotal&UPLOAD:$uploadTotal"
 
-:log info "Consumo de dados total: Download = $downloadTotal E Upload = $uploadTotal"
-
-# zerar os contadores de download e upload em consumidoSessaoAtual.txt
-/file set $nomeArquivoSessaoAtual contents="DOWNLOAD:0&UPLOAD:0"
-:log info "Contadores de download e upload zerados em '$nomeArquivoSessaoAtual'."
-
-:log info "Sistema de registro de consumo de dados finalizado."
+:log info "Download: $downloadTotal MB"
+:log info "Upload: $uploadTotal"
