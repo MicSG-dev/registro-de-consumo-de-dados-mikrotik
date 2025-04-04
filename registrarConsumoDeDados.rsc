@@ -1,5 +1,5 @@
-:log info " "
-:log info "Registrando o consumo de dados"
+#:log info " "
+#:log info "Registrando o consumo de dados"
 
 :local nomeArquivoSessaoAtual "flash/consumidoSessaoAtual.txt"
 
@@ -11,5 +11,5 @@
 
 /file set $nomeArquivoSessaoAtual contents="DOWNLOAD:$consumoDownload&UPLOAD:$consumoUpload"
 
-:log info "Download: $consumoDownload MB E Upload: $consumoUpload MB"
-:log info "Registro de consumo de dados finalizado."
+#:log info "Download: $consumoDownload MB E Upload: $consumoUpload MB"
+#:log info "Registro de consumo de dados finalizado."
