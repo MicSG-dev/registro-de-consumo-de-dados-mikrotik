@@ -61,4 +61,4 @@
 :set uploadTotal ($consumoUploadAnterior + $consumoUploadAtual)
 
 :log info "Download: $downloadTotal MB"
-:log info "Upload: $uploadTotal"
+:log info "Upload: $uploadTotal MB"
