@@ -88,3 +88,14 @@
 }
 
 :log info "Consumo de dados atual: Download = $consumoDownloadAtual E Upload = $consumoUploadAtual"
+
+:local downloadTotal 0
+:local uploadTotal 0
+
+:set downloadTotal ($consumoDownloadAnterior + $consumoDownloadAtual)
+:set uploadTotal ($consumoUploadAnterior + $consumoUploadAtual)
+:log info "Consumo total de dados: Download = $downloadTotal E Upload = $uploadTotal"
+
+# zerar os contadores de download e upload em consumidoSessaoAtual.txt
+/file set $nomeArquivoSessaoAtual contents="DOWNLOAD:0&UPLOAD:0"
+:log info "Contadores de download e upload zerados em '$nomeArquivoSessaoAtual'."
